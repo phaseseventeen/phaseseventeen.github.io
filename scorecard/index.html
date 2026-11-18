@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Value Gap Scorecard</title>
+<meta name="description" content="Twelve questions and ten minutes to find out whether your business is getting a return on its AI spend. From Phase17.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a single reading column of four numbered question groups,
+   with the score kept in view in a dark results panel that fills as you answer. */
+:root{
+  color-scheme: light;
+  --paper:#F6F5F1;
+  --paper-2:#EFEDE6;
+  --card:#FFFFFF;
+  --ink:#15201A;
+  --ink-2:#3A443E;
+  --ink-3:#4A544E;
+  --line:#D9D6CC;
+  --green:#1F4D3F;
+  --deep:#17261F;
+  --accent:#D4F36B;
+  --display:'Newsreader', Georgia, 'Times New Roman', serif;
+  --body:'Hanken Grotesk', ui-sans-serif, 'Helvetica Neue', Arial, sans-serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0;text-wrap:pretty}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+
+header.top{border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:16px;padding-bottom:16px;flex-wrap:wrap}
+.mark{font-family:var(--display);font-size:26px;font-weight:600;letter-spacing:-.02em;text-decoration:none;color:var(--ink);display:inline-flex;align-items:baseline}
+.mark span{font-family:var(--mono);font-size:20px;font-weight:500;background:var(--accent);padding:0 5px;margin-left:3px;border-radius:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 22px;border-radius:999px;font:inherit;font-weight:600;font-size:15px;text-decoration:none;cursor:pointer;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.lime{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--green)}
+.hero{padding:44px 0 28px;display:flex;flex-direction:column;gap:18px}
+.hero h1{font-family:var(--display);font-weight:500;font-size:clamp(38px,8vw,60px);line-height:1.02;letter-spacing:-.025em}
+.hero p{font-size:19px;color:var(--ink-2);max-width:34em}
+.how{display:flex;gap:10px 24px;flex-wrap:wrap;font-size:15px;color:var(--ink-3);padding:0;margin:0;list-style:none}
+.how b{color:var(--ink);font-weight:600}
+
+.group{padding:28px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:16px}
+.group-head{display:flex;align-items:baseline;gap:14px}
+.group-head .n{font-family:var(--display);font-size:40px;line-height:1;color:var(--green)}
+.group-head h2{font-size:22px;font-weight:700}
+.group-head .sub{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.q{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px;margin:0;display:flex;flex-direction:column;gap:14px;min-width:0}
+.q legend{float:left;width:100%;padding:0;font-size:17px;font-weight:500;line-height:1.45;display:flex;gap:10px}
+.q legend .qn{font-family:var(--mono);font-size:13px;color:var(--ink-3);padding-top:3px;min-width:1.6em}
+.opts{clear:both;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.opts label{position:relative;display:flex}
+.opts input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.opts span{flex:1;display:flex;align-items:center;justify-content:center;min-height:46px;border:1.5px solid #BDB9AD;border-radius:999px;font-weight:600;font-size:15px;color:var(--ink-2);background:var(--card);transition:background .12s,color .12s,border-color .12s}
+.opts input:hover + span{border-color:var(--ink)}
+.opts input:checked + span{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.opts input:focus-visible + span{outline:2px solid var(--green);outline-offset:3px}
+
+.result{background:var(--deep);color:var(--paper);border-radius:10px;padding:26px 22px;margin:12px 0 0;display:flex;flex-direction:column;gap:20px}
+.result .eyebrow{color:var(--accent)}
+.score-row{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.score{font-family:var(--display);font-size:72px;line-height:.9;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.score small{font-size:28px;color:#C9D1CB}
+.band{font-family:var(--display);font-size:28px;line-height:1.1;font-weight:500}
+.result p{color:#C9D1CB}
+.bars{display:grid;gap:12px}
+.bar{display:grid;grid-template-columns:96px 1fr 34px;align-items:center;gap:12px;font-size:15px}
+.bar .track{height:10px;border-radius:999px;background:rgba(246,245,241,.16);overflow:hidden}
+.bar .fill{height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .25s}
+.bar.low .fill{background:#F4A58A}
+.bar .v{font-family:var(--mono);font-size:13px;text-align:right;font-variant-numeric:tabular-nums;color:#C9D1CB}
+.next{border-top:1px solid rgba(246,245,241,.18);padding-top:18px;display:flex;flex-direction:column;gap:8px}
+.next h3{font-size:17px;font-weight:700}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.result .btn.ghost{border-color:rgba(246,245,241,.5);color:var(--paper)}
+.note{font-size:14px;color:#C9D1CB;min-height:1.4em}
+
+.bands{padding:36px 0;display:flex;flex-direction:column;gap:16px}
+.bands h2{font-family:var(--display);font-weight:500;font-size:30px;line-height:1.1}
+.bands ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.bands li{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:16px 18px;display:grid;grid-template-columns:64px 1fr;gap:6px 14px;align-items:baseline}
+.bands li .r{font-family:var(--mono);font-size:13px;color:var(--ink-3)}
+.bands li b{font-weight:700}
+.bands li p{grid-column:2;font-size:15px;color:var(--ink-2)}
+
+footer{border-top:1px solid var(--line);padding:24px 0 36px;font-size:13px;color:var(--ink-3)}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:420px){
+  .bar{grid-template-columns:84px 1fr 30px}
+  .score{font-size:60px}
+  .group-head .n{font-size:34px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="https://phaseseventeen.com" aria-label="Phase17 home">Phase<span>17</span></a>
+    <a class="btn ghost" href="https://calendar.zoho.eu/zc/view/slot-booking/0801123e7457e416802c2abec597a90d0000062b06a9f4367fefea8b1aedb92f02148358d4b0aa084405db805307aa81cc22b4b4b2e61432861e9a7c78dae61beec0">Book a 20-minute call</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow">AI Value Gap Scorecard</span>
+    <h1>Your team has AI. Is the business getting anything for it?</h1>
+    <p>Twelve statements about ownership, workflows, adoption and value. Answer for your business as it runs today and you get a score out of 24 and the one area to fix first.</p>
+    <ul class="how">
+      <li><b>10 minutes</b></li>
+      <li><b>No email needed</b></li>
+      <li>For MDs and operations leaders at firms of 50 to 500 people</li>
+    </ul>
+  </section>
+
+  <form id="card" novalidate></form>
+
+  <section class="result" aria-live="polite" id="result">
+    <span class="eyebrow" id="progress">0 of 12 answered</span>
+    <div class="score-row">
+      <div class="score"><span id="total">0</span><small> / 24</small></div>
+      <div class="band" id="band">Your score builds as you answer</div>
+    </div>
+    <p id="reading">Answer all twelve to see what your score means and where to start.</p>
+    <div class="bars" id="bars"></div>
+    <div class="next" id="next" hidden>
+      <h3 id="next-h"></h3>
+      <p id="next-p"></p>
+    </div>
+    <div class="actions">
+      <a class="btn lime" href="https://calendar.zoho.eu/zc/view/slot-booking/0801123e7457e416802c2abec597a90d0000062b06a9f4367fefea8b1aedb92f02148358d4b0aa084405db805307aa81cc22b4b4b2e61432861e9a7c78dae61beec0">Talk it through in 20 minutes</a>
+      <button class="btn ghost" type="button" id="copy">Copy my results</button>
+      <button class="btn ghost" type="button" id="reset">Start again</button>
+    </div>
+    <div class="note" id="note" role="status"></div>
+  </section>
+
+  <section class="bands">
+    <h2>What the score means</h2>
+    <ul>
+      <li><span class="r">0–8</span><b>Tools without a plan</b><p>Spend is running ahead of ownership. Name an owner and choose three workflows before buying anything else.</p></li>
+      <li><span class="r">9–16</span><b>Pockets of value</b><p>Some people get results and the business does not. Redesign one workflow end to end and measure it.</p></li>
+      <li><span class="r">17–24</span><b>Implementation is working</b><p>The question now is scale. Extend the pattern to the next workflows and keep the measures.</p></li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Phase17 Ltd</span>
+    <span>phaseseventeen.com · hello@phaseseventeen.com</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var GROUPS = [
+    {key:'Ownership', qs:[
+      'One named person is accountable for the business result of our AI spend, beyond managing the licences.',
+      'Each AI-supported workflow has an owner in the business, outside IT.',
+      'We have written rules for what staff may and may not do with AI tools, and people know them.'
+    ], fix:['Start with ownership','Give one person in the business, outside IT, accountability for what AI is meant to change. Until that person has a name, nothing else on this list holds.']},
+    {key:'Workflows', qs:[
+      'We can name the three workflows where AI should make the biggest commercial difference.',
+      'At least one of those workflows has been redesigned, with more done than adding a tool to it.',
+      'We know what each of those workflows costs today in time, money or errors.'
+    ], fix:['Start with workflows','Choose three workflows and write down what each costs today. Without that baseline you cannot show a return, however good the tools are.']},
+    {key:'Adoption', qs:[
+      'We know how many of our paid seats are in regular use.',
+      'Use is spread across teams and does not depend on a few enthusiasts.',
+      'Line managers are expected to drive use in their own area, alongside any central team.'
+    ], fix:['Start with adoption','Find out how many paid seats are in regular use, then make line managers responsible for use in their teams. Training alone will not move this.']},
+    {key:'Value', qs:[
+      'We agreed what success would look like before we bought or piloted.',
+      'We can point to one measured change in cost, speed, quality or revenue.',
+      'We could show whoever we answer to, on one page, what AI has changed for the business.'
+    ], fix:['Start with value','Pick one workflow, agree the measure, and record it before and after. One proven change is worth more than any usage figure.']}
+  ];
+  var LABELS = ['No','Partly','Yes'];
+  var KEY = 'p17-scorecard-v1';
+  var answers = new Array(12).fill(null);
+  try { var s = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(s) && s.length === 12) answers = s; } catch(e){}
+
+  var form = document.getElementById('card');
+  var bars = document.getElementById('bars');
+  var html = '', bhtml = '', n = 0;
+  GROUPS.forEach(function(g, gi){
+    html += '<section class="group"><div class="group-head"><span class="n">' + (gi+1) + '</span><h2>' + g.key + '</h2><span class="sub" id="sub' + gi + '">0 / 6</span></div>';
+    g.qs.forEach(function(q){
+      html += '<fieldset class="q"><legend><span class="qn">' + (n+1) + '</span><span>' + q + '</span></legend><div class="opts">';
+      LABELS.forEach(function(l, v){
+        html += '<label><input type="radio" id="q' + n + 'v' + v + '" name="q' + n + '" value="' + v + '"' + (answers[n] === v ? ' checked' : '') + '><span>' + l + '</span></label>';
+      });
+      html += '</div></fieldset>';
+      n++;
+    });
+    html += '</section>';
+    bhtml += '<div class="bar" id="bar' + gi + '"><span>' + g.key + '</span><div class="track"><div class="fill"></div></div><span class="v">0/6</span></div>';
+  });
+  form.innerHTML = html;
+  bars.innerHTML = bhtml;
+
+  function $(id){ return document.getElementById(id); }
+
+  function summary(){
+    var subs = GROUPS.map(function(g, gi){
+      var t = 0; for (var i = 0; i < 3; i++) t += answers[gi*3+i] || 0; return t;
+    });
+    var total = subs.reduce(function(a,b){return a+b;}, 0);
+    var done = answers.filter(function(a){ return a !== null; }).length;
+    var band = total <= 8 ? ['Tools without a plan','Spend is running ahead of ownership. Before buying anything else, name an owner and choose three workflows.']
+             : total <= 16 ? ['Pockets of value','Some people are getting results and the business is not. The gap closes when one workflow is redesigned end to end and measured.']
+             : ['Implementation is working','You have the foundations. The gain now comes from extending the same pattern to the next workflows and keeping the measures.'];
+    var low = 0; subs.forEach(function(v, i){ if (v < subs[low]) low = i; });
+    return {subs:subs, total:total, done:done, band:band, low:low};
+  }
+
+  function render(){
+    var r = summary();
+    $('total').textContent = r.total;
+    $('progress').textContent = r.done + ' of 12 answered';
+    r.subs.forEach(function(v, i){
+      $('sub' + i).textContent = v + ' / 6';
+      var b = $('bar' + i);
+      b.querySelector('.fill').style.width = (v / 6 * 100) + '%';
+      b.querySelector('.v').textContent = v + '/6';
+      b.classList.toggle('low', r.done === 12 && i === r.low && v < 5);
+    });
+    if (r.done === 12){
+      $('band').textContent = r.band[0];
+      $('reading').textContent = r.band[1];
+      $('next').hidden = false;
+      if (r.subs[r.low] >= 5){
+        $('next-h').textContent = 'No weak area';
+        $('next-p').textContent = 'All four areas score well. Keep the measures in place as you extend to more workflows.';
+      } else {
+        $('next-h').textContent = GROUPS[r.low].fix[0] + ' (' + r.subs[r.low] + ' of 6)';
+        $('next-p').textContent = GROUPS[r.low].fix[1];
+      }
+    } else {
+      $('band').textContent = 'Your score builds as you answer';
+      $('reading').textContent = 'Answer all twelve to see what your score means and where to start.';
+      $('next').hidden = true;
+    }
+  }
+
+  form.addEventListener('change', function(e){
+    var t = e.target;
+    if (t && t.name && t.name.charAt(0) === 'q'){
+      answers[parseInt(t.name.slice(1), 10)] = parseInt(t.value, 10);
+      try { localStorage.setItem(KEY, JSON.stringify(answers)); } catch(err){}
+      $('note').textContent = '';
+      render();
+    }
+  });
+  form.addEventListener('submit', function(e){ e.preventDefault(); });
+
+  $('reset').addEventListener('click', function(){
+    answers = new Array(12).fill(null);
+    try { localStorage.removeItem(KEY); } catch(err){}
+    [].forEach.call(form.querySelectorAll('input[type=radio]'), function(r){ r.checked = false; r.removeAttribute('checked'); });
+    $('note').textContent = '';
+    render();
+    form.scrollIntoView({block:'start'});
+  });
+
+  $('copy').addEventListener('click', function(){
+    var r = summary();
+    var text = 'AI Value Gap Scorecard (Phase17)\n' +
+      'Score: ' + r.total + ' / 24' + (r.done === 12 ? ' · ' + r.band[0] : ' (' + r.done + ' of 12 answered)') + '\n' +
+      GROUPS.map(function(g, i){ return g.key + ': ' + r.subs[i] + '/6'; }).join('\n') +
+      (r.done === 12 && r.subs[r.low] < 5 ? '\nFix first: ' + GROUPS[r.low].key : '') +
+      '\nphaseseventeen.com';
+    var note = $('note');
+    try {
+      navigator.clipboard.writeText(text).then(function(){ note.textContent = 'Results copied.'; },
+        function(){ note.textContent = 'Copy was blocked by your browser. Select the scores above to copy them.'; });
+    } catch(err){ note.textContent = 'Copy was blocked by your browser. Select the scores above to copy them.'; }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
