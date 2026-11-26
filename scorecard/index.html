@@ -125,7 +125,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     </ul>
   </section>
 
-  <form id="card" novalidate></form>
+  <form id="card" novalidate autocomplete="off"></form>
 
   <section class="result" aria-live="polite" id="result">
     <span class="eyebrow" id="progress">0 of 12 answered</span>
@@ -189,9 +189,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     ], fix:['Start with value','Pick one workflow, agree the measure, and record it before and after, including what the AI costs to run. One proven net change is worth more than any usage figure.']}
   ];
   var LABELS = ['No','Partly','Yes'];
-  var KEY = 'p17-scorecard-v1';
   var answers = new Array(12).fill(null);
-  try { var s = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(s) && s.length === 12) answers = s; } catch(e){}
+  // Every visit starts blank. Clear answers saved by the earlier version of this page.
+  try { localStorage.removeItem('p17-scorecard-v1'); } catch(e){}
 
   var form = document.getElementById('card');
   var bars = document.getElementById('bars');
@@ -260,21 +260,21 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     var t = e.target;
     if (t && t.name && t.name.charAt(0) === 'q'){
       answers[parseInt(t.name.slice(1), 10)] = parseInt(t.value, 10);
-      try { localStorage.setItem(KEY, JSON.stringify(answers)); } catch(err){}
       $('note').textContent = '';
       render();
     }
   });
   form.addEventListener('submit', function(e){ e.preventDefault(); });
 
-  $('reset').addEventListener('click', function(){
+  function clearAll(){
     answers = new Array(12).fill(null);
-    try { localStorage.removeItem(KEY); } catch(err){}
     [].forEach.call(form.querySelectorAll('input[type=radio]'), function(r){ r.checked = false; r.removeAttribute('checked'); });
     $('note').textContent = '';
     render();
-    form.scrollIntoView({block:'start'});
-  });
+  }
+  $('reset').addEventListener('click', function(){ clearAll(); form.scrollIntoView({block:'start'}); });
+  // Coming back with the browser's Back button can restore an old page; start it blank too.
+  window.addEventListener('pageshow', function(e){ if (e.persisted) clearAll(); });
 
   $('copy').addEventListener('click', function(){
     var r = summary();
